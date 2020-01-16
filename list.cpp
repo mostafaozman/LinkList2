@@ -1,134 +1,181 @@
-/*
-By: Mostafa Osman, Student List: This program will let you add to a list (name, last name, 
-gpa, and ID), print all items from the list, and delete items by looking them up with the id 
- */
-#include <iostream> 
-#include <cstring>
-#include <cstdlib>
-#include <iomanip>
-#include <stdio.h>
-#include <iterator>
-#include <vector> 
-#include <string.h>
-#include "Node.h"
-#include "Student.h"
+//
+//  list.cpp
+//  LL_1
+//
+//  Created by Mostafa Osman (Sunset HS) on 1/14/20.
+//
 
-using namespace std;
+#include "list.h"
+#include <iostream>
 
-void addNew(Node* previous, Student* student);
-void print(Node* next);
-void average(Node* previous, Node* next, char name[]);
-float average(Node* next); 
 
-/*// Declares struct for student
-struct Student
+
+list::list()
 {
-  char FirstName[10];
-  char LastName[10]; 
-  int id; 
-  float gpa; 
-};
-//declares methods
-void Print(vector<Student*> pstudent); 
-Student* ADD();
-void Delete(vector<Student*>* pstudent, int deleteid);    
-*/
-
-Node* first = NULL; 
-
-int main()
-{
-  char input[7]; 
-  Student Mo; 
-  int i = 1; 
-  int deleteid; 
-  // cretes a vector pointer named pstudent
-  vector<Student*> pstudent; 
-  //main loop
-  while (int i = 1)
-    {
-      cout << "Would you like to ADD, PRINT, or DELETE?" << endl;
-      cin >> input;
-  if (strcmp(input, "ADD") == 0)
-    { 
-      cout << "Add function" << endl;
-      pstudent.push_back(ADD());
-   }
-  
-  if (strcmp(input, "PRINT") == 0)
-    {
-      Print(pstudent); 
-    }
-
-  if (strcmp(input, "DELETE") == 0)
-    {
-      cout << "Delete Funtion";
-      cout << "\nPlease enter the ID you want to delete\n";
-
-      cin >> deleteid; 
-      Delete(&pstudent, deleteid); 
-      cout << "\nDeleted." << endl; 
-      cin.clear(); 
-      cin.ignore(10000000, '\n'); 
-    }
-  // if input is not ADD, PRINT, or DELETE it promts the user to input again
-  else if ((!(strcmp(input, "ADD") == 0)) || (!(strcmp(input, "PRINT") == 0)) || (!(strcmp(input, "DELETE") == 0)))
-    {
-      cout << "\nPlease enter a vaild command it is case sensitive"<< endl; 
-    }
-    }
-
-  return 0; 
+   
 }
-// print method
-void Print(vector<Student*> pstudent)
-{
-  cout << "Print Function\n";
 
-  vector<Student*>::iterator ptr;
-  //points to locaton of info and prints each piece 
-  for (ptr = pstudent.begin(); ptr <  pstudent.end(); ++ptr)
-    {
-      cout << (*ptr) -> FirstName << " " << (*ptr) -> LastName << ", " <<
-	(*ptr) -> id << ", " << fixed << setprecision(2)<< (*ptr) -> gpa << endl;
+list::~list() {
+    //Clean up all the dunamic allocation
+    if(head != NULL) {
+        while(position !=NULL) {
+            node *temp = position;
+            position = position->get_next();
+            delete temp;
+        }
     }
-  cin.ignore(1000000, '\n'); 
+    
 }
-// add method
-Student* ADD()
-{
-  // creates student pointer named pupil
-  Student* pupil = new Student();
 
-  cout << "Please enter the students first name: \n"  << endl;
-  cin >> pupil->FirstName;
-  // clear and ignore after each one
-  cout << "Please enter the students last name: \n" << endl;
-  cin >> pupil->LastName;
-  cout << "Please enter the students ID: \n" << endl;
-  cin >> pupil->id;
-  cin.clear(); 
-  cin.ignore(1000000, '\n');
-  cout << "Please enter the students GPA: \n" << endl;
-  cin >> pupil->gpa;
-  cin.clear();
-  cin.ignore(1000000, '\n');
 
-  return pupil; 
-}
-// delete method
-void Delete (vector<Student*>* pstudent, int deleteid)
+int list::add(student *newstudent)
 {
-  vector<Student*>::iterator a;
-  // if the id inputed is the same as the current id in the loop then delete 
-  for (a = pstudent -> begin(); a != pstudent -> end(); ++a)
-    {
-      if ((*a) -> id == deleteid)
-	{
-	  delete *a; 
-	  pstudent -> erase(a);
-	  cin.get(); 
-	  return; 
-	}
+    //if this is the first node, add and return
+     if (head == NULL) {
+            head = new node();
+            head->set_student(newstudent);
+            head->set_next(NULL);
+            addit = head;
+            //previous = head;
+         return 0;
+     }
+     
+     //sorted add
+    //if we reached the end of the list, insert at the end and return
+    if (addit == NULL) {
+        addit = new node();
+        addit->set_student(newstudent);
+        addit->set_next(NULL);
+        previous->set_next(addit);
+        return 0;
     }
+     //Determine if should insert at current node position
+    if (newstudent->get_id() <= addit->get_student()->get_id()) {
+        //is it going to bne the first node in the list?
+        if (addit == head){
+            head = new node();
+            head->set_student(newstudent);
+            head->set_next(addit);
+            return 0;
+        }
+        //insert at a middle node
+        else {
+            node * temp = addit;
+            addit = new node();
+            addit->set_student(newstudent);
+            addit->set_next(temp);
+            previous->set_next(addit);
+            return 0;
+        }
+    } else {
+        //advance the linked list pointer
+        previous = addit;
+        addit = addit->get_next();
+        //recursive call to add
+        add(newstudent);
+        //reset the pointers upon return
+        addit = head;
+        previous = NULL;
+        return 0;
+    }
+     
+     return 1;
+     
 }
+
+int list::print(void) {
+    position = head;
+    print(position);
+    return 0;
+}
+
+int list::print(node *myposition) {
+    if(myposition == NULL)
+        return 0;
+    else {
+        position->print_node();
+        position = position->get_next();
+        print(position);
+        return 0;
+    }
+    return 1;
+}
+
+float list::average(void) {
+    position = head;
+    float sum_gpa = 0;
+    int nstudents = 0;
+    while(position != NULL)
+    {
+        sum_gpa += position->get_student()->get_gpa();
+        position=position->get_next();
+        nstudents++;
+    }
+    //  std::cout<<"\nSum GPA = "<<sum_gpa;
+    //  std::cout<<"\nNumber of Students = "<<nstudents;
+    return (sum_gpa/nstudents);
+}
+
+int list::deletenode(int s_id){
+    position = head;
+    found = false;
+    if (head == NULL)
+        return 1;
+    else
+        //ID found and deleted
+        return deletenode(s_id, position);
+        //ID not found;
+}
+
+int list::deletenode (int s_id, node *myposition){
+    //if only one node
+    if (head->get_next() == NULL){
+        if(myposition->get_student()->get_id() == s_id)
+        {
+            delete head;
+            head = NULL;
+            return 0;
+            }
+        else
+            return 1;
+    }
+    
+    //if first node
+    if (myposition == head && myposition->get_student()->get_id() == s_id)
+        {
+            node *temp = head;
+            head = head->get_next();
+            delete temp;
+            return 0;
+        }
+    
+    // last 2 nodes or only 2 nodes;
+    if(myposition->get_next()->get_next() == NULL){
+        if (myposition->get_next()->get_student()->get_id() == s_id) {
+        node * temp = myposition->get_next();
+        myposition->set_next(myposition->get_next()->get_next());
+        delete temp;
+        return 0;
+        }
+        else
+            return 1;
+    }
+    
+    //all in the middle
+    if (myposition->get_next()->get_student()->get_id() == s_id) {
+        node * temp = myposition->get_next();
+        myposition->set_next(myposition->get_next()->get_next());
+        delete temp;
+        return 0;
+    }
+    else {
+        myposition = myposition->get_next();
+        if (position != NULL)
+            return deletenode(s_id, myposition);
+        else
+            return 1;
+    }
+    
+   //why am I here, return 1
+    return 1;
+    }

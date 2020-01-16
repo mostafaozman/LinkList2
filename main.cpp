@@ -1,121 +1,136 @@
-/*
-By: Mostafa Osman, Student List: This program will let you add to a list (name, last name, 
-gpa, and ID), print all items from the list, and delete items by looking them up with the id 
- */
-#include <iostream> 
-#include <cstdlib>
+//
+//  main.hpp
+//  LL_1
+//
+//  Created by Mostafa Osman (Sunset HS) on 1/14/20.
+//
+
+
+#include <iostream>
 #include <iomanip>
-#include <iterator>
-#include <vector> 
-#include <string.h>
+#include "student.h"
+#include "node.h"
+#include "list.h"
+#define FIXED_FLOAT(x) std::fixed<<std::setprecision(2)<<x
 
-using namespace std; 
-// Declares struct for student
-struct Student
-{
-  char FirstName[10];
-  char LastName[10]; 
-  int id; 
-  float gpa; 
-};
-//declares methods
-void Print(vector<Student*> pstudent); 
-Student* ADD();
-void Delete(vector<Student*>* pstudent, int deleteid);    
+using namespace std;
 
-int main()
-{
-  char input[7]; 
-  Student Mo; 
-  int i = 1; 
-  int deleteid; 
-  // cretes a vector pointer named pstudent
-  vector<Student*> pstudent; 
-  //main loop
-  while (int i = 1)
-    {
-      cout << "Would you like to ADD, PRINT, or DELETE?" << endl;
-      cin >> input;
-  if (strcmp(input, "ADD") == 0)
-    { 
-      cout << "Add function" << endl;
-      pstudent.push_back(ADD());
-   }
-  
-  if (strcmp(input, "PRINT") == 0)
-    {
-      Print(pstudent); 
-    }
+int main(int argc, const char * argv[]) {
+    
+    //variables
+    list* my_list;
+    student *newstudent;
+    
+    //Initialize
+    my_list = new list;
+     
+    //input loop
+    /*
+     while (true)
+     {
+     char input[10];
+     char firstName[20];
+     char lastName[20];
+     int id;
+     float gpa;
+     cout << "What would you like to do? (Add, Print, Delete, Average, or Quit)" << endl;
+     cin.get(input, 10);
+     cin.clear();
+     cin.ignore(100000, '\n');
+     
+         //Add student
+     if(strcmp(input, "Add") == 0)
+     {
+         cout << "What is the students first name?" << endl;
+         cin.get(firstName, 20);
+         cin.clear();
+         cin.ignore(100000, '\n');
+         cout << "What is the students last name?" << endl;
+         cin.get(lastName, 20);
+         cin.clear();
+         cin.ignore(100000, '\n');
+         cout << "What is the students ID?" << endl;
+         cin >> id;
+         cout << "What is the students GPA?" << endl;
+         cin >> gpa;
+    
+         newstudent = new student(firstName, lastName, id, gpa);
+         my_list->add(newstudent);
+         cout << "\nStudent added!" << endl;
+     }
+    // Print list
+     else if (strcmp(input, "Print") == 0)
+     {
+         my_list->print();
+     }
+    //Delete a student using ID
+     else if (strcmp(input, "Delete") == 0)
+     {
+         cout << "What is the ID of the student you would like to delete?" << endl;
+         int id;
+         cin >> id;
+         my_list -> deletenode(id);
+     }
+    //Print Average GPA
+     else if (strcmp(input, "Average") == 0)
+     {
+         float average_gpa = my_list->average();
+         cout<<"\nAverage GPA ="<<FIXED_FLOAT(average_gpa)<<"\n";
+     }
+    //Quit
+     else if (strcmp(input, "Quit") == 0)
+     {
+         break;
+     }
+     else{
+         cout << "Invalid input. Check spelling/capitalization" << endl;
+     }
+     }
+    */
+//Test code - use for debug
+    //Define and add students
+    student *student1, *student2, *student3, *student4, *student5, *student6;
+    student1 = new student("Samuel", "Jackson", 3, 4.0);
+    student2 = new student("Barak", "Obama", 53, 3.8);
+    student3 = new student("Thomas", "Jefferson",67, 3.5);
+    student4 = new student("Bill", "Clinton", 2, 3.0);
+    student5 = new student("John", "Adams", 6, 2.7);
+    student6 = new student("Donald", "Trump", 776543, 3.0);
+    
+    //Print List
+    my_list->print();
+    //Add student
+    my_list->add(student1);
+    my_list->print();
+    
+    my_list->add(student2);
+    my_list->print();
+    
+    my_list->add(student3);
+    my_list->print();
+    
+    my_list->add(student4);
+    my_list->print();
+    
+    my_list->add(student5);
+    my_list->print();
+    
+    my_list->add(student6);
+    my_list->print();
+    
+    //Average GPA
+    float average_gpa = my_list->average();
+    cout<<"\nAverage GPA ="<<FIXED_FLOAT(average_gpa)<<"\n";
+    
+    //Delete student
+    if(my_list->deletenode(2))
+        std::cout<<"\nID NOT FOUND";
+    else
+        std::cout<<"\nStudent deleted";
 
-  if (strcmp(input, "DELETE") == 0)
-    {
-      cout << "Delete Funtion";
-      cout << "\nPlease enter the ID you want to delete\n";
-
-      cin >> deleteid; 
-      Delete(&pstudent, deleteid); 
-      cout << "\nDeleted." << endl; 
-      cin.clear(); 
-      cin.ignore(10000000, '\n'); 
-    }
-  // if input is not ADD, PRINT, or DELETE it promts the user to input again
-  else if ((!(strcmp(input, "ADD") == 0)) || (!(strcmp(input, "PRINT") == 0)) || (!(strcmp(input, "DELETE") == 0)))
-    {
-      cout << "\nPlease enter a vaild command it is case sensitive"<< endl; 
-    }
-    }
-
-  return 0; 
+    my_list->print();
+    
+    return 0;
 }
-// print method
-void Print(vector<Student*> pstudent)
-{
-  cout << "Print Function\n";
 
-  vector<Student*>::iterator ptr;
-  //points to locaton of info and prints each piece 
-  for (ptr = pstudent.begin(); ptr <  pstudent.end(); ++ptr)
-    {
-      cout << (*ptr) -> FirstName << " " << (*ptr) -> LastName << ", " <<
-	(*ptr) -> id << ", " << fixed << setprecision(2)<< (*ptr) -> gpa << endl;
-    }
-  cin.ignore(1000000, '\n'); 
-}
-// add method
-Student* ADD()
-{
-  // creates student pointer named pupil
-  Student* pupil = new Student();
 
-  cout << "Please enter the students first name: \n"  << endl;
-  cin >> pupil->FirstName;
-  // clear and ignore after each one
-  cout << "Please enter the students last name: \n" << endl;
-  cin >> pupil->LastName;
-  cout << "Please enter the students ID: \n" << endl;
-  cin >> pupil->id;
-  cin.clear(); 
-  cin.ignore(1000000, '\n');
-  cout << "Please enter the students GPA: \n" << endl;
-  cin >> pupil->gpa;
-  cin.clear();
-  cin.ignore(1000000, '\n');
-
-  return pupil; 
-}
-// delete method
-void Delete (vector<Student*>* pstudent, int deleteid)
-{
-  vector<Student*>::iterator a;
-  // if the id inputed is the same as the current id in the loop then delete 
-  for (a = pstudent -> begin(); a != pstudent -> end(); ++a)
-    {
-      if ((*a) -> id == deleteid)
-	{
-	  delete *a; 
-	  pstudent -> erase(a);
-	  cin.get(); 
-	  return; 
-	}
-    }
-}
