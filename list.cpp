@@ -17,6 +17,7 @@ list::list()
 
 list::~list() {
     //Clean up all the dunamic allocation
+    position = head; 
     if(head != NULL) {
         while(position !=NULL) {
             node *temp = position;
