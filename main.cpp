@@ -177,7 +177,7 @@ int del(int id, Node* MyPosition)
     // If you want to delete the first value
     if(head->getStudent()->getID() == id)
     {
-        Node* temp = nullptr;
+        Node* temp = NULL;
         temp = head;
         head = head->getNext();
         delete temp->getStudent();
@@ -221,7 +221,7 @@ int del(int id, Node* MyPosition)
         
         if (Position != NULL &&Position->getStudent()->getID() == id)
             {
-                Node* temp = nullptr;
+                Node* temp = NULL;
                 temp = Position;
                 prev->setNext(Position->getNext());
                 delete temp->getStudent();
